@@ -19,6 +19,7 @@
             animation: gradient 20s ease infinite;
             font-family: 'Playfair Display', serif;
             overflow: hidden;
+            padding: 20px;
         }
 
         @keyframes gradient {
@@ -31,6 +32,8 @@
             position: relative;
             filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.15));
             animation: float 6s ease-in-out infinite;
+            width: 100%;
+            max-width: 400px;
         }
 
         @keyframes float {
@@ -40,8 +43,8 @@
         }
 
         .envelope {
-            width: 400px;
-            height: 280px;
+            width: 100%;
+            aspect-ratio: 10/7;
             background: #fff;
             border-radius: 20px;
             position: relative;
@@ -53,15 +56,15 @@
 
         .envelope-front {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             border-radius: 20px;
             background: linear-gradient(45deg, #E6E6FA, #DDA0DD);
             border: 2px solid rgba(255, 255, 255, 0.4);
             transition: all 0.4s ease;
             backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .envelope:hover .envelope-front {
@@ -71,10 +74,10 @@
 
         .flap {
             position: absolute;
-            top: -140px;
+            top: -50%;
             left: 0;
             right: 0;
-            height: 140px;
+            height: 50%;
             background: linear-gradient(45deg, #DDA0DD, #E6E6FA);
             transform-origin: bottom;
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,21 +87,19 @@
         }
 
         .envelope.opened .flap {
-            transform: translateY(140px) rotateX(180deg);
+            transform: translateY(100%) rotateX(180deg);
         }
 
         .tulip {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
             cursor: pointer;
-            z-index: 1;
             transition: transform 0.4s ease;
+            width: 120px;
+            height: 140px;
         }
 
         .tulip:hover {
-            transform: translate(-50%, -50%) scale(1.15);
+            transform: scale(1.15);
         }
 
         .tulip-flower {
@@ -110,6 +111,7 @@
             transform-origin: bottom center;
             animation: sway 4s ease-in-out infinite;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            filter: drop-shadow(0 0 10px rgba(221, 160, 221, 0.5));
         }
 
         .tulip-flower::before,
@@ -126,17 +128,24 @@
         .tulip-flower::before {
             transform: rotate(-30deg);
             left: -20px;
+            animation: petalWave 3s ease-in-out infinite;
         }
 
         .tulip-flower::after {
             transform: rotate(30deg);
             right: -20px;
+            animation: petalWave 3s ease-in-out infinite reverse;
+        }
+
+        @keyframes petalWave {
+            0%, 100% { transform: rotate(-30deg); }
+            50% { transform: rotate(-40deg); }
         }
 
         .tulip-stem {
             width: 4px;
             height: 50px;
-            background: #98FB98;
+            background: linear-gradient(to bottom, #98FB98, #90EE90);
             position: absolute;
             bottom: -50px;
             left: 50%;
@@ -147,12 +156,18 @@
         .tulip-leaf {
             width: 20px;
             height: 30px;
-            background: #98FB98;
+            background: linear-gradient(45deg, #98FB98, #90EE90);
             position: absolute;
             bottom: -30px;
             border-radius: 0 20px 0 20px;
             transform-origin: bottom left;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: leafRustle 4s ease-in-out infinite;
+        }
+
+        @keyframes leafRustle {
+            0%, 100% { transform: rotate(-30deg) scale(1); }
+            50% { transform: rotate(-25deg) scale(1.05); }
         }
 
         .tulip-leaf.left {
@@ -163,6 +178,7 @@
         .tulip-leaf.right {
             right: -15px;
             transform: rotate(30deg);
+            animation: leafRustle 4s ease-in-out infinite reverse;
         }
 
         @keyframes sway {
@@ -172,13 +188,10 @@
 
         .letter {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
+            inset: 10px;
             background: linear-gradient(135deg, #fff 0%, #faf8ff 100%);
             border-radius: 15px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateY(100%);
@@ -203,7 +216,7 @@
 
         .letter-content {
             font-family: 'Dancing Script', cursive;
-            font-size: 1.5em;
+            font-size: clamp(1rem, 4vw, 1.5rem);
             line-height: 1.6;
             color: #4a4a4a;
             opacity: 0;
@@ -217,22 +230,65 @@
             transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Sparkles animation */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: white;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes sparkle {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 0; }
+        }
+
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
             background: rgba(221, 160, 221, 0.1);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: rgba(221, 160, 221, 0.3);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(221, 160, 221, 0.5);
+        }
+
+        /* Media Queries */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .tulip {
+                transform: scale(0.8);
+            }
+
+            .letter {
+                padding: 15px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .container {
+                transform: scale(0.8);
+            }
         }
     </style>
 </head>
@@ -282,20 +338,54 @@ With affection,
             }
         }
 
-        tulip.addEventListener('click', () => {
+        // Create sparkle effect
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            sparkle.style.setProperty('--tx', (Math.random() * 100 - 50) + 'px');
+            sparkle.style.setProperty('--ty', (Math.random() * 100 - 50) + 'px');
+            document.body.appendChild(sparkle);
+            
+            sparkle.style.animation = 'sparkle 1s ease-in-out forwards';
+            
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+
+        tulip.addEventListener('click', (e) => {
             envelope.classList.add('opened');
             letter.classList.add('visible');
+            
+            // Add sparkles
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createSparkle(e.clientX, e.clientY);
+                }, i * 100);
+            }
+
             setTimeout(() => {
                 typeWriter(letterContent, message);
             }, 800);
         });
 
-        // Enhanced parallax effect
+        // Enhanced parallax effect with device orientation support
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (e) => {
+                const tiltX = e.gamma / 60; // Convert to a -1 to 1 range
+                const tiltY = e.beta / 60;
+                
+                envelope.style.transform = `perspective(1000px) rotateY(${tiltX * 10}deg) rotateX(${-tiltY * 10}deg)`;
+            });
+        }
+
         document.addEventListener('mousemove', (e) => {
-            const mouseX = e.clientX / window.innerWidth;
-            const mouseY = e.clientY / window.innerHeight;
-            
-            envelope.style.transform = `perspective(1000px) rotateY(${mouseX * 10 - 5}deg) rotateX(${mouseY * 10 - 5}deg)`;
+            if (!window.DeviceOrientationEvent) {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                envelope.style.transform = `perspective(1000px) rotateY(${mouseX * 10 - 5}deg) rotateX(${mouseY * 10 - 5}deg)`;
+            }
         });
     </script>
 </body>
